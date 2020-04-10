@@ -4,24 +4,19 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="google-site-verification" content="kYcmjzq-TI-hxjlWzRE1goDJJ8GUrBd03awieiYpjBw" />
     <link rel="icon" href="asset/favicon.ico">
     <title>自訂轉盤</title>
     <meta name="description" content="自訂轉盤、機率、選項！">
     <meta name="og:description" content="自訂轉盤、機率、選項！" />
-    <meta property="fb:app_id" content="1606433366287698" />
     <meta property="og:locale" content="zh_TW" />
     <meta property="og:title" content="自訂轉盤" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="http://z358z358.github.io/Roulette/" />
     <meta property="og:site_name" content="自訂轉盤" />
     <meta property="og:description" content="自訂轉盤、機率、選項！" />
-    <meta property="og:image" content="http://z358z358.github.io/Roulette/asset/200x200.jpg" />
     <link href="dist/styles/main.css?19112602" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/jquery.jssocials/1.4.0/jssocials.css" />
     <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/jquery.jssocials/1.4.0/jssocials-theme-flat.css" />
-    <script src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" async></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
     google.load("visualization", "1", {
@@ -48,28 +43,13 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="navbar">
                 <ul class="nav navbar-nav">
-                    <li><a href="#" data-toggle="modal" data-target="#list-modal" data-step="6" data-intro='點此可察看那些轉盤很熱門，旁邊則是可以看最新的轉盤！' v-on="click:getList('hot')">熱門轉盤</a></li>
+<!--                    <li><a href="#" data-toggle="modal" data-target="#list-modal" data-step="6" data-intro='點此可察看那些轉盤很熱門，旁邊則是可以看最新的轉盤！' v-on="click:getList('hot')">熱門轉盤</a></li>-->
                     <li><a href="#" data-toggle="modal" data-target="#list-modal" v-on="click:getList('ts')">最新上架</a></li>
                     <li><a href="#" data-toggle="modal" data-target="#set-modal" data-step="4" data-intro='點此可以自行設定轉盤內容、選項、機率！' v-show="goFlag == false">修改轉盤</a></li>
                     <li><a href="#" data-toggle="modal" data-target="#save-modal" data-step="5" data-intro='轉盤設定完成後，點此即可儲存內容！' v-on="click:saveType = 'save'">儲存轉盤</a></li>
                     <li><a href="#" data-toggle="modal" data-target="#save-modal" v-show="user.uid && set.uid == user.uid" v-on="click:saveType = 'new'">另存轉盤</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-<!--                    <li><a href="#" data-toggle="modal" data-target="#disqus-modal" v-on="click:showDsq">留言</a></li>-->
-<!--                    <li class="dropdown" v-show="user.uid == ''" data-step="7" data-intro='登入使用更方便，支援修改轉盤，我的轉盤！'>-->
-<!--                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">登入 <span class="caret"></span></a>-->
-<!--                        <ul class="dropdown-menu">-->
-<!--                            <li><a href="#" data-toggle="modal" v-on="click:login('facebook')">Facebook</a></li>-->
-<!--                            <li><a href="#" data-toggle="modal" v-on="click:login('google')">Google+</a></li>-->
-<!--                        </ul>-->
-<!--                    </li>-->
-<!--                    <li class="dropdown" v-show="user.uid">-->
-<!--                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true" v-text="'Hi ' + user.displayName"><span class="caret"></span></a>-->
-<!--                        <ul class="dropdown-menu">-->
-<!--                            <li><a href="#" data-toggle="modal" data-target="#list-modal" v-on="click:getList('my')">我的轉盤</a></li>-->
-<!--                            <li><a href="#" data-toggle="modal" v-on="click:login('logout')">登出</a></li>-->
-<!--                        </ul>-->
-<!--                    </li>-->
                     <li><a class="first-intro" href="#" data-toggle="tooltip" data-placement="bottom" title="介紹，點我點我!" data-step="8" data-intro='感謝耐心看完介紹，點此可以再看一次喔!' v-on="click:showIntro"><i class="fa fa-question-circle"></i></a>
                     </li>
 <!--                    <li class="share-li"><a target="_blank" href="https://github.com/z358z358/Roulette" title="原始碼"><i class="fa fa-lg fa-github"></i></a>-->
@@ -245,6 +225,7 @@
             <source src="asset/crrect_answer3.mp3" type="audio/mpeg" /> Your browser does not support the audio element.
         </audio>
     </div>
+    <!-- todo 一鍵從 csv匯入選項, 呼叫 addOption   -->
     <!--<pre>{{ $data|json }}</pre>-->
     <!-- 設定轉盤 -->
     <div class="modal fade" id="set-modal" tabindex="-1" role="dialog" aria-labelledby="set-modalLabal" aria-hidden="true" v-on="click:draw">
@@ -270,6 +251,7 @@
                                 </th>
                             </tr>
                         </thead>
+                        <!--顯示default選項 -->
                         <tbody v-repeat="set.options" v-transition>
                             <tr>
                                 <td>
@@ -292,32 +274,32 @@
         </div>
     </div>
     <!-- 列表 -->
-    <div class="modal fade" id="list-modal" tabindex="-1" role="dialog" aria-labelledby="list-modalLabal" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="list-modalLabel" v-text="listTitle"></h4>
-                </div>
-                <div class="modal-body">
-                    <div class="alert alert-info" role="alert" v-show="list.length > 49">僅顯示前50筆</div>
-                    <div class="list-group">
-                        <div class="list-wrap" v-repeat="list | orderBy listType true">
-                            <a href="#{{ id }}" class="list-group-item" data-dismiss="modal"  v-on="click:loadOption(id)">
-                                <i v-show="isPrivate" class="fa fa-unlock-alt" aria-hidden="true"></i>
-                                <span class="item-title" v-text="title || '沒名字'"></span>
-                                <p class="text-right">
-                                    <small class="" title="人氣" v-text="hot + '人氣:'" v-show="hot > 0"></small>
-                                    <small class="timeago" title="{{ts}}"></small>
-                                </p>
-                            </a>
-                            <i v-if="listTitle == '我的轉盤'" v-on="click:deleteData(id)" class="fa fa-trash list-trash" title="刪除" aria-hidden="true"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<!--    <div class="modal fade" id="list-modal" tabindex="-1" role="dialog" aria-labelledby="list-modalLabal" aria-hidden="true">-->
+<!--        <div class="modal-dialog">-->
+<!--            <div class="modal-content">-->
+<!--                <div class="modal-header">-->
+<!--                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
+<!--                    <h4 class="modal-title" id="list-modalLabel" v-text="listTitle"></h4>-->
+<!--                </div>-->
+<!--                <div class="modal-body">-->
+<!--                    <div class="alert alert-info" role="alert" v-show="list.length > 49">僅顯示前50筆</div>-->
+<!--                    <div class="list-group">-->
+<!--                        <div class="list-wrap" v-repeat="list | orderBy listType true">-->
+<!--                            <a href="#{{ id }}" class="list-group-item" data-dismiss="modal"  v-on="click:loadOption(id)">-->
+<!--                                <i v-show="isPrivate" class="fa fa-unlock-alt" aria-hidden="true"></i>-->
+<!--                                <span class="item-title" v-text="title || '沒名字'"></span>-->
+<!--                                <p class="text-right">-->
+<!--                                    <small class="" title="人氣" v-text="hot + '人氣:'" v-show="hot > 0"></small>-->
+<!--                                    <small class="timeago" title="{{ts}}"></small>-->
+<!--                                </p>-->
+<!--                            </a>-->
+<!--                            <i v-if="listTitle == '我的轉盤'" v-on="click:deleteData(id)" class="fa fa-trash list-trash" title="刪除" aria-hidden="true"></i>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
     <!-- 儲存 -->
     <div class="modal fade" id="save-modal" tabindex="-1" role="dialog" aria-labelledby="save-modalLabal" aria-hidden="true">
         <div class="modal-dialog">
@@ -367,19 +349,15 @@
             </div>
         </div>
     </div>
-    <div id="fb-root"></div>
+<!--    <div id="fb-root"></div>-->
     <!--<script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.5.0.min.js"></script>-->
     <script type="text/javascript" src="dist/scripts/main.js?19102204"></script>
-<!--    <script>-->
-<!--    (function(d, s, id) {-->
-<!--        var js, fjs = d.getElementsByTagName(s)[0];-->
-<!--        if (d.getElementById(id)) return;-->
-<!--        js = d.createElement(s);-->
-<!--        js.id = id;-->
-<!--        js.src = "//connect.facebook.net/zh_TW/sdk.js#xfbml=1&version=v4.0&appId=482845198525908";-->
-<!--        fjs.parentNode.insertBefore(js, fjs);-->
-<!--    }(document, 'script', 'facebook-jssdk'));-->
-<!--    </script>-->
+    <script> console.log(vue.set.options) </script>
+    <!-- add a new one -->
+    <script> vue.set.options.unshift({ name: '測試', weight: 1, on: true }) </script>
+    <!-- remove the added one -->
+    <script> vue.set.options.splice(0, 1) </script>
+
     <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = 'roulette-tw';
@@ -387,27 +365,6 @@
         this.language = "zh_TW";
     };
     </script>
-    <!-- Google Tag Manager -->
-<!--    <noscript>-->
-<!--        <iframe src="//www.googletagmanager.com/ns.html?id=GTM-MNGDS4" height="0" width="0" style="display:none;visibility:hidden"></iframe>-->
-<!--    </noscript>-->
-<!--    <script>-->
-<!--    (function(w, d, s, l, i) {-->
-<!--        w[l] = w[l] || [];-->
-<!--        w[l].push({-->
-<!--            'gtm.start': new Date().getTime(),-->
-<!--            event: 'gtm.js'-->
-<!--        });-->
-<!--        var f = d.getElementsByTagName(s)[0],-->
-<!--            j = d.createElement(s),-->
-<!--            dl = l != 'dataLayer' ? '&l=' + l : '';-->
-<!--        j.async = true;-->
-<!--        j.src =-->
-<!--            '//www.googletagmanager.com/gtm.js?id=' + i + dl;-->
-<!--        f.parentNode.insertBefore(j, f);-->
-<!--    })(window, document, 'script', 'dataLayer', 'GTM-MNGDS4');-->
-<!--    </script>-->
-    <!-- End Google Tag Manager -->
 </body>
 
 </html>
