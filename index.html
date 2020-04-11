@@ -46,8 +46,6 @@
 <!--                    <li><a href="#" data-toggle="modal" data-target="#list-modal" data-step="6" data-intro='點此可察看那些轉盤很熱門，旁邊則是可以看最新的轉盤！' v-on="click:getList('hot')">熱門轉盤</a></li>-->
                     <li><a href="#" data-toggle="modal" data-target="#list-modal" v-on="click:getList('ts')">最新上架</a></li>
                     <li><a href="#" data-toggle="modal" data-target="#set-modal" data-step="4" data-intro='點此可以自行設定轉盤內容、選項、機率！' v-show="goFlag == false">修改轉盤</a></li>
-                    <li><a href="#" data-toggle="modal" data-target="#save-modal" data-step="5" data-intro='轉盤設定完成後，點此即可儲存內容！' v-on="click:saveType = 'save'">儲存轉盤</a></li>
-                    <li><a href="#" data-toggle="modal" data-target="#save-modal" v-show="user.uid && set.uid == user.uid" v-on="click:saveType = 'new'">另存轉盤</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a class="first-intro" href="#" data-toggle="tooltip" data-placement="bottom" title="介紹，點我點我!" data-step="8" data-intro='感謝耐心看完介紹，點此可以再看一次喔!' v-on="click:showIntro"><i class="fa fa-question-circle"></i></a>
@@ -78,7 +76,8 @@
         </div>
         <div class="alert alert-success alert-dismissible z-10" role="alert" v-if="logs.length > 0">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            結果:<strong v-text="logs[0].content"></strong>
+            結果:<strong v-text="logs[0].content" id="result"></strong>
+            <script>alert_restaurant($('#result').text())</script>
             <div class="pull-right timeago" title="{{logs[0].ts}}"></div>
         </div>
         <div class="alert alert-success alert-dismissible z-10" role="alert" v-if="turnFlag > 0">
@@ -225,7 +224,6 @@
             <source src="asset/crrect_answer3.mp3" type="audio/mpeg" /> Your browser does not support the audio element.
         </audio>
     </div>
-    <!-- todo 一鍵從 csv匯入選項, 呼叫 addOption   -->
     <!--<pre>{{ $data|json }}</pre>-->
     <!-- 設定轉盤 -->
     <div class="modal fade" id="set-modal" tabindex="-1" role="dialog" aria-labelledby="set-modalLabal" aria-hidden="true" v-on="click:draw">
@@ -273,67 +271,6 @@
             </div>
         </div>
     </div>
-    <!-- 列表 -->
-<!--    <div class="modal fade" id="list-modal" tabindex="-1" role="dialog" aria-labelledby="list-modalLabal" aria-hidden="true">-->
-<!--        <div class="modal-dialog">-->
-<!--            <div class="modal-content">-->
-<!--                <div class="modal-header">-->
-<!--                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
-<!--                    <h4 class="modal-title" id="list-modalLabel" v-text="listTitle"></h4>-->
-<!--                </div>-->
-<!--                <div class="modal-body">-->
-<!--                    <div class="alert alert-info" role="alert" v-show="list.length > 49">僅顯示前50筆</div>-->
-<!--                    <div class="list-group">-->
-<!--                        <div class="list-wrap" v-repeat="list | orderBy listType true">-->
-<!--                            <a href="#{{ id }}" class="list-group-item" data-dismiss="modal"  v-on="click:loadOption(id)">-->
-<!--                                <i v-show="isPrivate" class="fa fa-unlock-alt" aria-hidden="true"></i>-->
-<!--                                <span class="item-title" v-text="title || '沒名字'"></span>-->
-<!--                                <p class="text-right">-->
-<!--                                    <small class="" title="人氣" v-text="hot + '人氣:'" v-show="hot > 0"></small>-->
-<!--                                    <small class="timeago" title="{{ts}}"></small>-->
-<!--                                </p>-->
-<!--                            </a>-->
-<!--                            <i v-if="listTitle == '我的轉盤'" v-on="click:deleteData(id)" class="fa fa-trash list-trash" title="刪除" aria-hidden="true"></i>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-    <!-- 儲存 -->
-    <div class="modal fade" id="save-modal" tabindex="-1" role="dialog" aria-labelledby="save-modalLabal" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="save-modalLabel" v-text="(saveType == 'new') ? '另存轉盤' : '儲存轉盤' ">儲存轉盤</h4>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="form-group">
-                            <label>給他個標題吧！</label>
-                            <input class="form-control" placeholder="標題" v-model="set.title">
-                        </div>
-                        <div class="form-check" title="不會出現在公開列表裡">
-                            <input class="form-check-input" type="checkbox" v-model="set.isPrivate" value="1" id="defaultCheck1">
-                            <label class="form-check-label" for="defaultCheck1">
-                                不公開的轉盤
-                            </label>
-                            <p>
-                                <span>不會出現在公開列表裡</span>
-                                <span v-show="user.uid == ''">，可以先登入帳號，就會出現在[我的轉盤]中</span>
-                                <span v-show="user.uid">，會出現在[我的轉盤]中</span>
-                            </p>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn" data-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" v-on="click:saveOnFireBase">確定</button>
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="modal fade" id="disqus-modal" tabindex="-1" role="dialog" aria-labelledby="disqus-modalLabal" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -359,7 +296,8 @@
     <!-- remove the added one -->
     <script> vue.set.options.splice(0, 1) </script>
     <script>
-        vue.set.options.splice(0, 4)
+        vue.set.options.splice(0, 4) // remove default values
+        vue.setVolume(false) // set default to mute
         $.ajax({
             url: "breakfast.csv",
             async: false,
@@ -373,11 +311,15 @@
                 var template = { name: '測試', weight: 1, on: true };
                 for (i = 1; i < data.length; i++ ) {
                     template = Object.assign({}, template) // deep copy object
-                    template.name = data[i][0];
+                    template.name = data[i][0]; // get restaurant name
                     vue.set.options.unshift(template);
                 }
             }
         });
+        // todo put this in vue methods
+        function alert_restaurant(x) {
+            alert(x);
+        }
     </script>
 
     <script type="text/javascript">
