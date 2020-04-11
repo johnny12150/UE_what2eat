@@ -352,11 +352,33 @@
 <!--    <div id="fb-root"></div>-->
     <!--<script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.5.0.min.js"></script>-->
     <script type="text/javascript" src="dist/scripts/main.js?19102204"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-csv@1.0.11/src/jquery.csv.min.js"></script>
     <script> console.log(vue.set.options) </script>
     <!-- add a new one -->
     <script> vue.set.options.unshift({ name: '測試', weight: 1, on: true }) </script>
     <!-- remove the added one -->
     <script> vue.set.options.splice(0, 1) </script>
+    <script>
+        vue.set.options.splice(0, 4)
+        $.ajax({
+            url: "breakfast.csv",
+            async: false,
+            success: function (csvd) {
+                data = $.csv.toArrays(csvd);
+            },
+            dataType: "text",
+            complete: function () {
+               console.log(data[1]);
+                var i;
+                var template = { name: '測試', weight: 1, on: true };
+                for (i = 1; i < data.length; i++ ) {
+                    template = Object.assign({}, template) // deep copy object
+                    template.name = data[i][0];
+                    vue.set.options.unshift(template);
+                }
+            }
+        });
+    </script>
 
     <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
