@@ -325,22 +325,18 @@
                 url: 'https://script.google.com/macros/s/AKfycbzqPY9-4fyZwd8sffcwKdNHpWKRbpV37kNUMI5wHrXO0gDjcFc/exec',
                 async: false,
                 success: function (ue){
-                    data = ue
                     console.log(ue)
-                },
-                dataType: 'json',
-                complete: function () {
                     var i;
                     var template = { name: '測試', weight: 1, on: true };
-                    for (i = 0; i < data[0]['data'].length; i++ ) {
+                    for (i = 0; i < ue.length; i++ ) {
                         template = Object.assign({}, template) // deep copy object
-                        template.name = data[0]['data'][i]; // get restaurant name
+                        template.name = ue[i]['data'][0]; // get restaurant name
                         vue.set.options.unshift(template);
                     }
-                }
+                },
+                dataType: 'json'
             })
         }
-
 
         // todo put this in vue methods
         function alert_restaurant(x) {
