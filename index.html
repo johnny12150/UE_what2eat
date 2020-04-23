@@ -13,6 +13,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="自訂轉盤" />
     <meta property="og:description" content="自訂轉盤、機率、選項！" />
+    <meta property="og:image" content="//asset/200x200.jpg" />
     <link href="dist/styles/main.css?19112602" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/jquery.jssocials/1.4.0/jssocials.css" />
@@ -44,7 +45,7 @@
             <div class="collapse navbar-collapse" id="navbar">
                 <ul class="nav navbar-nav">
 <!--                    <li><a href="#" data-toggle="modal" data-target="#list-modal" data-step="6" data-intro='點此可察看那些轉盤很熱門，旁邊則是可以看最新的轉盤！' v-on="click:getList('hot')">熱門轉盤</a></li>-->
-                    <li><a href="#" data-toggle="modal" data-target="#list-modal" v-on="click:getList('ts')">最新上架</a></li>
+<!--                    <li><a href="#" data-toggle="modal" data-target="#list-modal" v-on="click:getList('ts')">最新上架</a></li>-->
                     <li><a href="#" data-toggle="modal" data-target="#set-modal" data-step="4" data-intro='點此可以自行設定轉盤內容、選項、機率！' v-show="goFlag == false">修改轉盤</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
@@ -76,8 +77,8 @@
         </div>
         <div class="alert alert-success alert-dismissible z-10" role="alert" v-if="logs.length > 0">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <!--   todo 監聽 result是否被click, 如果click跳該餐廳的網頁         -->
             結果:<strong v-text="logs[0].content" id="result"></strong>
-            <script>alert_restaurant($('#result').text())</script>
             <div class="pull-right timeago" title="{{logs[0].ts}}"></div>
         </div>
         <div class="alert alert-success alert-dismissible z-10" role="alert" v-if="turnFlag > 0">
@@ -298,24 +299,49 @@
     <script>
         vue.set.options.splice(0, 4) // remove default values
         vue.setVolume(false) // set default to mute
-        $.ajax({
-            url: "breakfast.csv",
-            async: false,
-            success: function (csvd) {
-                data = $.csv.toArrays(csvd);
-            },
-            dataType: "text",
-            complete: function () {
-               console.log(data[1]);
-                var i;
-                var template = { name: '測試', weight: 1, on: true };
-                for (i = 1; i < data.length; i++ ) {
-                    template = Object.assign({}, template) // deep copy object
-                    template.name = data[i][0]; // get restaurant name
-                    vue.set.options.unshift(template);
+        var sheet_api = true
+        if (!sheet_api){
+            $.ajax({
+                url: "breakfast.csv",
+                async: false,
+                success: function (csvd) {
+                    data = $.csv.toArrays(csvd);
+                },
+                dataType: "text",
+                complete: function () {
+                    console.log(data[1]);
+                    var i;
+                    var template = { name: '測試', weight: 1, on: true };
+                    for (i = 1; i < data.length; i++ ) {
+                        template = Object.assign({}, template) // deep copy object
+                        template.name = data[i][0]; // get restaurant name
+                        vue.set.options.unshift(template);
+                    }
                 }
-            }
-        });
+            });
+        }else{
+            $.ajax({
+                type: 'GET',
+                url: 'https://script.google.com/macros/s/AKfycbzqPY9-4fyZwd8sffcwKdNHpWKRbpV37kNUMI5wHrXO0gDjcFc/exec',
+                async: false,
+                success: function (ue){
+                    data = ue
+                    console.log(ue)
+                },
+                dataType: 'json',
+                complete: function () {
+                    var i;
+                    var template = { name: '測試', weight: 1, on: true };
+                    for (i = 0; i < data[0]['data'].length; i++ ) {
+                        template = Object.assign({}, template) // deep copy object
+                        template.name = data[0]['data'][i]; // get restaurant name
+                        vue.set.options.unshift(template);
+                    }
+                }
+            })
+        }
+
+
         // todo put this in vue methods
         function alert_restaurant(x) {
             alert(x);
