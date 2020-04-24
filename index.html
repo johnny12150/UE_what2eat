@@ -18,11 +18,35 @@
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/jquery.jssocials/1.4.0/jssocials.css" />
     <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/jquery.jssocials/1.4.0/jssocials-theme-flat.css" />
+    <script src="https://code.jquery.com/jquery-3.5.0.min.js" integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-csv@1.0.11/src/jquery.csv.min.js"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
     google.load("visualization", "1", {
         packages: ["corechart"]
     });
+    var sheet_api = true
+    var ue_data;
+    if (!sheet_api){
+        $.ajax({
+            url: "breakfast.csv",
+            async: false,
+            success: function (csvd) {
+                ue_data = $.csv.toArrays(csvd);
+            },
+            dataType: "text"
+        });
+    }else{
+        $.ajax({
+            type: 'GET',
+            url: 'https://script.google.com/macros/s/AKfycbzqPY9-4fyZwd8sffcwKdNHpWKRbpV37kNUMI5wHrXO0gDjcFc/exec',
+            async: false,
+            success: function (ue){
+                ue_data = ue
+            },
+            dataType: 'json'
+        })
+    }
     </script>
 </head>
 
@@ -290,7 +314,6 @@
 <!--    <div id="fb-root"></div>-->
     <!--<script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.5.0.min.js"></script>-->
     <script type="text/javascript" src="dist/scripts/main.js?19102204"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-csv@1.0.11/src/jquery.csv.min.js"></script>
     <script> console.log(vue.set.options) </script>
     <!-- add a new one -->
     <script> vue.set.options.unshift({ name: '測試', weight: 1, on: true }) </script>
@@ -299,47 +322,28 @@
     <script>
         vue.set.options.splice(0, 4) // remove default values
         vue.setVolume(false) // set default to mute
-        // fixme: fetch data first
-        var sheet_api = true
+        var i;
+        var template = { name: '測試', weight: 1, on: true };
         if (!sheet_api){
-            $.ajax({
-                url: "breakfast.csv",
-                async: false,
-                success: function (csvd) {
-                    data = $.csv.toArrays(csvd);
-                },
-                dataType: "text",
-                complete: function () {
-                    console.log(data[1]);
-                    var i;
-                    var template = { name: '測試', weight: 1, on: true };
-                    for (i = 1; i < data.length; i++ ) {
-                        template = Object.assign({}, template) // deep copy object
-                        template.name = data[i][0]; // get restaurant name
-                        vue.set.options.unshift(template);
-                    }
-                }
-            });
+            for (i = 1; i < ue_data.length; i++ ) {
+                template = Object.assign({}, template) // deep copy object
+                template.name = ue_data[i][0]; // get restaurant name
+                vue.set.options.unshift(template);
+            }
         }else{
-            $.ajax({
-                type: 'GET',
-                url: 'https://script.google.com/macros/s/AKfycbzqPY9-4fyZwd8sffcwKdNHpWKRbpV37kNUMI5wHrXO0gDjcFc/exec',
-                async: false,
-                success: function (ue){
-                    console.log(ue)
-                    var i;
-                    var template = { name: '測試', weight: 1, on: true };
-                    for (i = 0; i < ue.length; i++ ) {
-                        // skip empty string
-                        if (ue[i]['data'][0] !== ''){
-                            template = Object.assign({}, template) // deep copy object
-                            template.name = ue[i]['data'][0]; // get restaurant name
+            console.log(ue_data)
+            for (i = 0; i < ue_data.length; i++ ) {
+                // skip empty string
+                if (ue_data[i]['data'][0] !== ''){
+                    template = Object.assign({}, template); // deep copy object
+                    template.name = ue_data[i]['data'][0]; // get restaurant name
+                    if (ue_data[i]['data'][2])
+                        template.weight = ue_data[i]['data'][2];
+                    else
+                        template.weight = 1;
                             vue.set.options.unshift(template);
-                        }
-                    }
-                },
-                dataType: 'json'
-            })
+                }
+            }
         }
 
         // todo put this in vue methods
