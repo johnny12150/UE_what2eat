@@ -299,6 +299,7 @@
     <script>
         vue.set.options.splice(0, 4) // remove default values
         vue.setVolume(false) // set default to mute
+        // fixme: fetch data first
         var sheet_api = true
         if (!sheet_api){
             $.ajax({
@@ -329,9 +330,12 @@
                     var i;
                     var template = { name: '測試', weight: 1, on: true };
                     for (i = 0; i < ue.length; i++ ) {
-                        template = Object.assign({}, template) // deep copy object
-                        template.name = ue[i]['data'][0]; // get restaurant name
-                        vue.set.options.unshift(template);
+                        // skip empty string
+                        if (ue[i]['data'][0] !== ''){
+                            template = Object.assign({}, template) // deep copy object
+                            template.name = ue[i]['data'][0]; // get restaurant name
+                            vue.set.options.unshift(template);
+                        }
                     }
                 },
                 dataType: 'json'
